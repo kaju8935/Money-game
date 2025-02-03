@@ -1,0 +1,260 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big & Small Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Big & Small Gambling Game</h1>
+        
+        <!-- Wallet Section -->
+        <div class="wallet">
+            <p>Balance: ₹<span id="balance">0</span></p>
+            <button class="btn deposit-btn" onclick="deposit()">Deposit</button>
+            <button class="btn withdraw-btn" onclick="openWithdrawPage()">Withdraw</button>
+        </div>
+
+        <!-- Betting Section -->
+        <div class="betting-section">
+            <h2>Place Your Bet</h2>
+            <div class="bet-options">
+                <button class="bet-btn" onclick="setBet(10)">₹10</button>
+                <button class="bet-btn" onclick="setBet(20)">₹20</button>
+                <button class="bet-btn" onclick="setBet(40)">₹40</button>
+                <button class="bet-btn" onclick="setBet(80)">₹80</button>
+                <button class="bet-btn" onclick="setBet(160)">₹160</button>
+                <button class="bet-btn" onclick="setBet(320)">₹320</button>
+                <button class="bet-btn" onclick="setBet(640)">₹640</button>
+                <button class="bet-btn" onclick="setBet(1000)">₹1000</button>
+            </div>
+            <p>Selected Bet: ₹<span id="selected-bet">0</span></p>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+            <button class="btn big-btn" onclick="placeBet('big')">Bet on Big</button>
+            <button class="btn small-btn" onclick="placeBet('small')">Bet on Small</button>
+        </div>
+
+        <!-- Game Result -->
+        <div id="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Withdraw Form</h1>
+
+        <form action="submit_withdraw.php" method="POST">
+            <label for="accountHolder">Account Holder Name:</label><br>
+            <input type="text" id="accountHolder" name="accountHolder" required><br><br>
+
+            <label for="accountNumber">Account Number:</label><br>
+            <input type="text" id="accountNumber" name="accountNumber" required><br><br>
+
+            <label for="ifscCode">IFSC Code:</label><br>
+            <input type="text" id="ifscCode" name="ifscCode" required><br><br>
+
+            <label for="bankName">Bank Name:</label><br>
+            <input type="text" id="bankName" name="bankName" required><br><br>
+
+            <button type="submit" class="btn">Submit Withdraw Request</button>
+        </form>
+    </div>
+</body>
+</html><style>/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.3);
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Wallet Section */
+.wallet {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.wallet p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+    margin: 5px;
+    transition: 0.3s ease;
+    color: white;
+}
+
+.deposit-btn {
+    background: #ff9800;
+}
+
+.withdraw-btn {
+    background: #ff5733;
+}
+
+.deposit-btn:hover, .withdraw-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Betting Section */
+.betting-section {
+    margin-bottom: 20px;
+}
+
+.bet-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.bet-btn {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background: #4CAF50;
+    color: white;
+    transition: 0.3s ease;
+}
+
+.bet-btn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
+
+/* Game Controls */
+.game-controls {
+    margin-top: 20px;
+}
+
+.big-btn {
+    background: #008CBA;
+}
+
+.small-btn {
+    background: #f44336;
+}
+
+.big-btn:hover, .small-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Game Result */
+#result {
+    margin-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+}</style><script>let balance = 0;  // Initial balance is set to 0
+
+// Set the amount selected for betting
+let selectedBet = 0;
+
+function setBet(amount) {
+    selectedBet = amount;
+    document.getElementById('selected-bet').innerText = amount;
+}
+
+// Place the bet (Big or Small)
+function placeBet(choice) {
+    if (selectedBet === 0) {
+        alert("Please select a bet amount!");
+        return;
+    }
+    if (selectedBet > balance) {
+        alert("Insufficient balance!");
+        return;
+    }
+
+    balance -= selectedBet;
+    document.getElementById('balance').innerText = balance;
+
+    let random = Math.random();
+    let result = (random < 0.75) ? (choice === 'big' ? 'small' : 'big') : choice;
+
+    let winAmount = selectedBet * 2;
+    if (result === choice) {
+        balance += winAmount;
+        document.getElementById('result').innerHTML = `<p style="color: lime;">You Won! ₹${winAmount}</p>`;
+    } else {
+        document.getElementById('result').innerHTML = `<p style="color: red;">You Lost! Try Again.</p>`;
+    }
+
+    document.getElementById('balance').innerText = balance;
+    selectedBet = 0;
+    document.getElementById('selected-bet').innerText = 0;
+}
+
+// Function to handle the Deposit process
+function deposit() {
+    let amount = prompt("Enter deposit amount:");
+    if (amount && !isNaN(amount) && amount > 0) {
+        balance = 0;  // Reset the balance to 0 initially (waiting for successful payment)
+        document.getElementById('balance').innerText = balance;
+
+        let upiID = "dangerwow73@okicici";
+        let upiURL = `upi://pay?pa=${upiID}&pn=BigSmallGame&mc=0000&tid=123456789&tr=TXN1234&tn=Deposit&am=${amount}&cu=INR`;
+
+        // Redirect to Google Pay for payment
+        window.location.href = upiURL;
+
+        // Simulating Google Pay payment completion after 10 seconds (for demo purpose)
+        setTimeout(() => {
+            balance = parseInt(amount); // After payment, balance will be equal to deposit amount
+            document.getElementById('balance').innerText = balance;
+            alert("Payment Successful! Your balance is now ₹" + balance);
+        }, 10000); // Payment completion simulation time (10 seconds)
+    } else {
+        alert("Invalid amount! Please enter a valid deposit amount.");
+    }
+}
+
+// Function to open Withdraw page
+function openWithdrawPage() {
+    window.location.href = "withdraw.html";
+}</script>
